@@ -73,7 +73,7 @@ package Elements.Dynamic
 		}
 		private function moveChar(event:Event):void
 		{
-			_txtScore.x +=  hoSpeed;
+			if(_txtScore != null)_txtScore.x +=  hoSpeed;
 			_lvlHolder.x -=  hoSpeed;
 			//Always running!!
 			if (! mainHitWall)
@@ -92,7 +92,7 @@ package Elements.Dynamic
 				_LevelGenerator.resetLvl();
 			}
 
-			//Salta se nao estiver numa escada
+			//Salta se nao estiver numa escada;
 			if (upKeyDown || mainJumping)
 			{
 				if (! mainOnLadder)
@@ -131,10 +131,6 @@ package Elements.Dynamic
 					}
 					break;
 				}
-				else
-				{
-
-				}
 				mainHitWall = false;
 				mainOnGround = false;//Player está fora do chão sem colisão
 			}
@@ -146,29 +142,25 @@ package Elements.Dynamic
 			{
 				//Ladder
 				var hitLadder:DisplayObject = ladderHolder.getChildAt(i);
-
 				if (this.hitTestObject(hitLadder))
 				{
-					if (this.x >= hitLadder.x + _lvlHolder.x - 10 && this.x <= hitLadder.x + _lvlHolder.x + 35)
-					{
-						mainOnLadder = true;
-
-						jumpSpeed = jumpSpeedLimit;//Para o salto
-						break;
-					}
+					mainOnLadder = true;
+					jumpSpeed = jumpSpeedLimit;
+					break;
 				}
 				mainOnLadder = false;
 			}
 
-			var bumperHolder = Sprite(_lvlHolder.getChildByName('bumperHolder'));
-			//Procura colisões com bumpers
-			for (i=0; i < bumperHolder.numChildren; i++)
+			var speederHolder = Sprite(_lvlHolder.getChildByName('speederHolder'));
+			//Procura colisões com speeders
+			for (i=0; i < speederHolder.numChildren; i++)
 			{
 				//Bumper
-				var hitBumper:DisplayObject = bumperHolder.getChildAt(i);
+				var hitBumper:DisplayObject = speederHolder.getChildAt(i);
 
 				if (this.hitTestObject(hitBumper))
 				{
+					mainOnGround = true;
 					mainBumping = true;
 					bumpSpeed = 20;
 				}
@@ -185,7 +177,6 @@ package Elements.Dynamic
 
 				if (this.hitTestObject(hitTramp))
 				{
-
 					//Salta!!!
 					mainJump();
 				}
@@ -299,19 +290,10 @@ package Elements.Dynamic
 
 		//TODO: Rever esta função
 		private function mainBump():void
-		{
-			var bumpDirection:int;
-			if (leftKeyDown)
-			{
-				bumpDirection = 1;
-			}
-			else if (rightKeyDown)
-			{
-				bumpDirection = -1;
-			}
+		{		
 			if (mainBumping)
 			{
-				_lvlHolder.x -=  bumpDirection * bumpSpeed;
+				this.x +=  bumpSpeed;
 				bumpSpeed *=  .5;
 				if (bumpSpeed <= 1)
 				{

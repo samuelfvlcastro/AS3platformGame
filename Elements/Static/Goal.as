@@ -16,9 +16,7 @@ package Elements.Static
 	public class Goal extends Sprite
 	{
 		private var _LevelGenerator:MovieClip;
-		private var _holder:Sprite;
 		private var _jBall:Player;
-		private var _txtScore:TextField;
 
 		public function Goal()
 		{
@@ -30,9 +28,7 @@ package Elements.Static
 		private function beginClass(event:Event):void
 		{
 			_LevelGenerator = MovieClip(parent.parent.parent);
-			_holder = Sprite(_LevelGenerator.lvlHolder);
-			_jBall = _LevelGenerator.lvlHolder.getChildByName('playerHolder').getChildByName('bBall');
-			_txtScore = _LevelGenerator.lvlHolder.getChildByName('textHolder').getChildByName('scoreBoard');
+			_jBall = _LevelGenerator.lvlHolder.getChildByName('playerHolder').getChildByName('Player');
 
 			this.graphics.beginFill(0x00FFFF);
 			this.graphics.drawRect(0,0,25,25);
@@ -40,18 +36,18 @@ package Elements.Static
 
 		public function destroy()
 		{
-			addEventListener(Event.ADDED, beginClass);
-			addEventListener(Event.ENTER_FRAME, eFrame);
+			removeEventListener(Event.ADDED, beginClass);
+			removeEventListener(Event.ENTER_FRAME, eFrame);
 		}
 
 		private function eFrame(event:Event):void
 		{
-			if (hitTestObject(_jBall))
+			if (this.hitTestObject(_jBall))
 			{
 				_LevelGenerator.lvlCurrent++;
-				var lastScore:int = _LevelGenerator.mainScore;
-				_LevelGenerator.resetLvl();
-				_LevelGenerator.mainScore = lastScore;
+				//var lastScore:int = _LevelGenerator.mainScore;
+				_LevelGenerator.resetLvl(true);
+				//_LevelGenerator.mainScore = lastScore;
 			}
 		}
 	}

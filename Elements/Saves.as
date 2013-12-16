@@ -8,49 +8,44 @@ package Elements
 	import flash.net.SharedObject;
 	public class Saves
 	{
-		var shared:SharedObject = SharedObject.getLocal("sharedStorage");
-		var tempArray:Array = new Array();
-		
-		public function Saves()
+		public static function getHighScore():Number
 		{
-			if (shared.data.score != null)
+			var shared:SharedObject = SharedObject.getLocal("sharedStorage");
+
+			//Se ainda não houver highScore
+			if (shared.data.highScore == null)
 			{
-				//Se já exitir um score meter num array
-				tempArray = shared.data.score;
+				saveHighScore(0);
+			}
+			return shared.data.highScore;
+		}
+
+		public static function saveHighScore(scoreValue:Number):void
+		{
+			try
+			{
+				var shared:SharedObject = SharedObject.getLocal("sharedStorage");
+				if (shared.data.highScore == null)
+				{
+					shared.data.highScore = scoreValue;
+				}
+				else if ( scoreValue > shared.data.highScore )
+				{
+					shared.data.highScore = scoreValue;
+				}
+				shared.flush();
+			}
+			catch (sharedObjectError:Error)
+			{
+				trace( "Caught this error:", sharedObjectError.name, sharedObjectError.message );
 			}
 		}
 
-		public function getHighScore():Array
+		public static function resetHighScore():void
 		{
-				return tempArray;
-		}
-
-		public function saveHighScore(pName, highScore):void
-		{
-			var objArray:Array = new Array();
-			objArray.push({"date":"23/06/2012","time":"08:23","score":788,"stage":7});
-			
-			//Push do highScore para o array
-			tempArray.push({"date":"23/06/2012","time":"08:23","score":788,"stage":7});
-			shared.data.score = tempArray;
-
-			//save e close
+			var shared:SharedObject = SharedObject.getLocal("sharedStorage");
+			shared.clear();
 			shared.flush();
-			shared.close();
-		}
-		
-		
-		public function resetHighScore():void
-		{
-			//Push do highScore para o array
-			tempArray = null;
-			shared.data.score = tempArray;
-
-			trace(tempArray);
-
-			//save e close
-			shared.flush();
-			shared.close();
 		}
 
 	}

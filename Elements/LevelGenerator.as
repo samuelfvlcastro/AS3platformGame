@@ -12,6 +12,7 @@ package Elements
 	import flash.text.TextFormat;
 	import flash.events.*;
 
+	import Elements.Saves;
 	import Elements.Static.*;
 	import Elements.Dynamic.*;
 
@@ -20,10 +21,11 @@ package Elements
 		public var score:int = 0;
 
 		private var dtextFormat:TextFormat = new TextFormat('Impact',20,0x2F7840);
-		
+
 		public var lvlHolder:Sprite;
 		private var row:int = 0;
 		private var newPlacement;
+		private var _txtScore:TextField;
 
 		private var lvlArray:Array;
 		private var lvlColumns:int;
@@ -40,22 +42,75 @@ package Elements
 		var blockHolder:Sprite = new Sprite();
 		//Holder para as escadas;
 		var ladderHolder:Sprite = new Sprite();
-		//Holder para os bumpers;
-		var bumperHolder:Sprite = new Sprite();
+		//Holder para os speeders;
+		var speederHolder:Sprite = new Sprite();
 		//Holder para as coins;
 		var coinHolder:Sprite = new Sprite();
 		//Holder para os Inimigos;
 		var enemyHolder:Sprite = new Sprite();
 		//Holder para os pathfinders ;
 		var pathfinderHolder:Sprite = new Sprite();
+		//Holder para o fim de nível
+		var GoalHolder:Sprite = new Sprite();
 
-		public function LevelGenerator(lvlHolder:Sprite, lvlArray:Array, lvlColumns:int)
+		//Nívels predefinidos
+
+		var X:String = 'CHAR';
+		public var lvlCurrent:int = 1;
+
+		/* Marcadores:
+		1: Bloco
+		2: Escada
+		3: Speeder
+		4: trampolim
+		5: inimigo
+		6: marcador de rota - inimigo
+		7: moeda
+		8: fim
+		X: Main Character
+		*/
+		var lvlArray1:Array = new Array(
+		9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,X,0,0,0,0,0,0,0,7,7,0,0,0,0,0,7,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,1,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		);
+		var lvlArray2:Array = new Array(
+		9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,X,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,6,0,5,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		);
+
+
+		public function LevelGenerator(lvlHolder:Sprite)
 		{
 			this.lvlHolder = lvlHolder;
 			addChild(this.lvlHolder);
-
-			this.lvlArray = lvlArray;
-			this.lvlColumns = lvlColumns;
 
 			addEventListener(Event.ADDED, beginClass);
 		}
@@ -64,9 +119,6 @@ package Elements
 		{
 			bgHolder.name = 'bgHolder';
 			this.lvlHolder.addChild(bgHolder);
-
-			playerHolder.name = 'playerHolder';
-			this.lvlHolder.addChild(playerHolder);
 
 			textHolder.name = 'textHolder';
 			this.lvlHolder.addChild(textHolder);
@@ -80,11 +132,14 @@ package Elements
 			ladderHolder.name = 'ladderHolder';
 			this.lvlHolder.addChild(ladderHolder);
 
-			bumperHolder.name = 'bumperHolder';
-			this.lvlHolder.addChild(bumperHolder);
+			speederHolder.name = 'speederHolder';
+			this.lvlHolder.addChild(speederHolder);
 
 			coinHolder.name = 'coinHolder';
 			this.lvlHolder.addChild(coinHolder);
+
+			GoalHolder.name = 'GoalHolder';
+			this.lvlHolder.addChild(GoalHolder);
 
 			enemyHolder.name = 'enemyHolder';
 			this.lvlHolder.addChild(enemyHolder);
@@ -92,6 +147,8 @@ package Elements
 			pathfinderHolder.name = 'pathfinderHolder';
 			this.lvlHolder.addChild(pathfinderHolder);
 
+			playerHolder.name = 'playerHolder';
+			this.lvlHolder.addChild(playerHolder);
 		}
 
 		public function addBlock(holder:Sprite):void
@@ -117,7 +174,7 @@ package Elements
 			holder.addChild(newPlacement);
 		}
 
-		public function addBumper(holder:Sprite):void
+		public function addSpeeder(holder:Sprite):void
 		{
 			newPlacement = new Sprite();
 			newPlacement.graphics.beginFill(0x00FF00,1);
@@ -167,7 +224,8 @@ package Elements
 			newPlacement.name = 'scoreBoard';
 
 			newPlacement.defaultTextFormat = dtextFormat;
-			newPlacement.text = 'Score: 0';
+			Saves.resetHighScore();
+			newPlacement.text = 'Score: ' + score;
 
 			holder.addChild(newPlacement);
 		}
@@ -184,6 +242,10 @@ package Elements
 
 		public function generate():void
 		{
+
+			lvlArray = MovieClip(this)['lvlArray' + lvlCurrent];//Selector de nível
+			lvlColumns = Math.ceil(lvlArray.length / 16);//Número de colunas
+
 			for (var i:int = 0; i<lvlArray.length; i++)
 			{
 				if (i/lvlColumns == int(i/lvlColumns))
@@ -204,7 +266,7 @@ package Elements
 				}
 				else if (lvlArray[i] == 3)
 				{
-					addBumper(bumperHolder);
+					addSpeeder(speederHolder);
 				}
 				else if (lvlArray[i] == 4)
 				{
@@ -224,11 +286,12 @@ package Elements
 				}
 				else if (lvlArray[i] == 8)
 				{
-					addGoal(enemyHolder);
+					addGoal(GoalHolder);
 				}
 				else if (lvlArray[i] == 9)
 				{
 					addScoreBoard(textHolder);
+					_txtScore = TextField(textHolder.getChildByName('scoreBoard'));
 				}
 
 				if (lvlArray[i] != 0 && newPlacement != undefined)
@@ -249,8 +312,17 @@ package Elements
 			ob.y = (row - 1) * ob.height;
 		}
 
-		public function resetLvl():void
+		public function resetLvl(passedLevel:Boolean = false):void
 		{
+			//Grava os scores
+			if (passedLevel)
+			{
+				Saves.saveHighScore(score);
+			}
+			else
+			{
+				Saves.saveHighScore(0);
+			}
 
 			//Destroi todos os elementos associados ao nível
 			for (var i:int=0; i<lvlHolder.numChildren; i++)
@@ -265,13 +337,14 @@ package Elements
 						{
 							basicClass.destroy();
 						}
-						catch (e:Error){/*Forma feia de ver se o método destroy existe!!*/}
+						catch (e:Error)
+						{/*Forma feia de ver se o método destroy existe!!*/
+						}
 						currentContainer.removeChildAt(i2);
 					}
 				}
 			}
 
-			score = 0;
 			lvlHolder.x = 0;
 			generate();
 		}
