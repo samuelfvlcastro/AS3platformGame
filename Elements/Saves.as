@@ -1,4 +1,9 @@
-﻿package 
+﻿/**
+Autor: Samuel F. V. Leal de Castro
+Número: 1050617
+Esta classe gera informação gravada
+**/
+package Elements
 {
 	import flash.net.SharedObject;
 	public class Saves

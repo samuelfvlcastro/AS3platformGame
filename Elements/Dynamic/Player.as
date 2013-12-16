@@ -6,7 +6,7 @@ Esta classe garante toda a interatividade entre o player e o nível:
  . Cálculos de colisões com o cenário
  . Cálculos de colisões com entidades (escadas, inimigos, portas, etc.)
 **/
-package 
+package Elements.Dynamic
 {
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -17,7 +17,7 @@ package
 	import flash.geom.Point;
 	import flash.display.Stage;
 
-	public class bBall extends MovieClip
+	public class Player extends MovieClip
 	{
 		//Variáveis genericas 
 		private var _LevelGenerator:MovieClip;
@@ -36,8 +36,8 @@ package
 		var downKeyDown:Boolean = false;
 
 		//Controlo de velocidade
-		var hoSpeed:Number = 1;//holder
-		var plSpeed:Number = 2;//player
+		var hoSpeed:Number = 2;//holder
+		var plSpeed:Number = 4;//player
 
 		//Controlo de saltos
 		var mainJumping:Boolean = false;
@@ -49,7 +49,7 @@ package
 		var mainBumping:Boolean = false;
 		var bumpSpeed:int = 20;
 
-		public function bBall()
+		public function Player()
 		{
 			addEventListener(Event.ADDED, beginClass);
 		}
@@ -87,24 +87,10 @@ package
 
 			//Morre se sair do mapa
 			var lvlHit = this.globalToLocal(new Point(_LevelGenerator.stage.x,_LevelGenerator.stage.y));//Transforma vetor global em relativo
-			trace(lvlHit.x);
 			if (lvlHit.x > 0)
 			{
 				_LevelGenerator.resetLvl();
 			}
-
-			//Afinal não vou usar estas teclas;
-			//Anda para esq e dir
-			/*if (leftKeyDown)
-			{
-			_lvlHolder.x +=  hoSpeed;
-			_LevelGenerator.bgHolder.x -=  hoSpeed * .5;
-			}
-			if (rightKeyDown)
-			{
-			_lvlHolder.x -=  hoSpeed;
-			_LevelGenerator.bgHolder.x +=  hoSpeed * .5;
-			}*/
 
 			//Salta se nao estiver numa escada
 			if (upKeyDown || mainJumping)
@@ -214,10 +200,6 @@ package
 			{
 				_LevelGenerator.resetLvl();
 			}
-
-			//updating score txt;
-			//var txtScore = TextField(_lvlHolder.getChildByName('txtScore'));
-			//txtScore.text = "Score: ";/* + _LevelGenerator.mainScore.toString()*/
 		}
 
 

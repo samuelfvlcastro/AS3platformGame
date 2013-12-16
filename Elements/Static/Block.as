@@ -1,4 +1,8 @@
-﻿package 
+﻿/**
+Autor: Samuel F. V. Leal de Castro
+Número: 1050617
+**/
+package Elements.Static
 {
 	import flash.display.Sprite;
 	import flash.display.MovieClip;

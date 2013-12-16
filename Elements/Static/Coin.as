@@ -1,4 +1,9 @@
-﻿package 
+﻿/**
+Autor: Samuel F. V. Leal de Castro
+Número: 1050617
+Esta classe gera todos eventos entre o player e as "moedas"
+**/
+package Elements.Static
 {
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
@@ -7,11 +12,12 @@
 	import flash.events.*;
 	import flash.text.TextField;
 	import flash.geom.Point;
-
+	import Elements.Dynamic.Player;
+	
 	public class Coin extends Sprite
 	{
 		private var _LevelGenerator:MovieClip;
-		private var _jBall:bBall;
+		private var _jBall:Player;
 		private var _txtScore:TextField;
 
 		public function Coin()
@@ -23,7 +29,7 @@
 		private function beginClass(event:Event):void
 		{
 			_LevelGenerator = MovieClip(parent.parent.parent);
-			_jBall = _LevelGenerator.lvlHolder.getChildByName('playerHolder').getChildByName('bBall');
+			_jBall = _LevelGenerator.lvlHolder.getChildByName('playerHolder').getChildByName('Player');
 			_txtScore = _LevelGenerator.lvlHolder.getChildByName('textHolder').getChildByName('scoreBoard');
 
 			this.graphics.beginFill(0x000000,0);
@@ -40,9 +46,7 @@
 
 		private function eFrame(event:Event):void
 		{
-			//Transforma vetor global em relativo
-			var localHit = this.globalToLocal(new Point(_jBall.x,_jBall.y));
-			if (localHit.x >= -5 && localHit.x <= 25 && localHit.y >= -5)
+			if(this.hitTestObject(_jBall))
 			{
 				if (this != null && this.parent != null)
 				{

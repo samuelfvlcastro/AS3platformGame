@@ -1,4 +1,9 @@
-﻿package 
+﻿/**
+Autor: Samuel F. V. Leal de Castro
+Número: 1050617
+Esta classe gera todos eventos entre o player e o fim do nível
+**/
+package Elements.Static
 {
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
@@ -6,12 +11,13 @@
 	import flash.display.DisplayObject;
 	import flash.events.*;
 	import flash.text.TextField;
+	import Elements.Dynamic.Player;
 
 	public class Goal extends Sprite
 	{
 		private var _LevelGenerator:MovieClip;
 		private var _holder:Sprite;
-		private var _jBall:bBall;
+		private var _jBall:Player;
 		private var _txtScore:TextField;
 
 		public function Goal()

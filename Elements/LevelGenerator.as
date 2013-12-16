@@ -1,23 +1,27 @@
-﻿package 
+﻿/**
+Autor: Samuel F. V. Leal de Castro
+Número: 1050617
+Esta classe garante a geração de níveis
+**/
+package Elements
 {
 	import flash.display.Sprite;
 	import flash.display.Shape;
 	import flash.display.MovieClip;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.events.*;
+
+	import Elements.Static.*;
+	import Elements.Dynamic.*;
 
 	public class LevelGenerator extends MovieClip
 	{
-		//public var jBall:bBall;
-		public var lvlHolder:Sprite;
-
 		public var score:int = 0;
 
 		private var dtextFormat:TextFormat = new TextFormat('Impact',20,0x2F7840);
-		//public var txtScore:TextField;
-		//public var textScore:TextField;
-
-		private var _root:Object;
+		
+		public var lvlHolder:Sprite;
 		private var row:int = 0;
 		private var newPlacement;
 
@@ -47,13 +51,17 @@
 
 		public function LevelGenerator(lvlHolder:Sprite, lvlArray:Array, lvlColumns:int)
 		{
-			_root = MovieClip(parent);
 			this.lvlHolder = lvlHolder;
 			addChild(this.lvlHolder);
 
 			this.lvlArray = lvlArray;
 			this.lvlColumns = lvlColumns;
 
+			addEventListener(Event.ADDED, beginClass);
+		}
+
+		private function beginClass(event:Event):void
+		{
 			bgHolder.name = 'bgHolder';
 			this.lvlHolder.addChild(bgHolder);
 
@@ -86,7 +94,7 @@
 
 		}
 
-		function addBlock(holder:Sprite):void
+		public function addBlock(holder:Sprite):void
 		{
 			newPlacement = new Block();
 			newPlacement.graphics.beginFill(0xFFFFFF,1);
@@ -94,14 +102,14 @@
 			holder.addChild(newPlacement);
 		}
 
-		function addPlayer(holder:Sprite):void
+		public function addPlayer(holder:Sprite):void
 		{
-			newPlacement = new bBall();
-			newPlacement.name = 'bBall';
+			newPlacement = new Player();
+			newPlacement.name = 'Player';
 			holder.addChild(newPlacement);
 		}
 
-		function addLadder(holder:Sprite):void
+		public function addLadder(holder:Sprite):void
 		{
 			newPlacement = new Sprite();
 			newPlacement.graphics.beginFill(0xFFFF00,1);
@@ -109,7 +117,7 @@
 			holder.addChild(newPlacement);
 		}
 
-		function addBumper(holder:Sprite):void
+		public function addBumper(holder:Sprite):void
 		{
 			newPlacement = new Sprite();
 			newPlacement.graphics.beginFill(0x00FF00,1);
@@ -117,7 +125,7 @@
 			holder.addChild(newPlacement);
 		}
 
-		function addTrampolin(holder:Sprite):void
+		public function addTrampolin(holder:Sprite):void
 		{
 			newPlacement = new Shape();
 			newPlacement.graphics.beginFill(0x00FF00);
@@ -125,14 +133,14 @@
 			holder.addChild(newPlacement);
 		}
 
-		function addEnemy(holder:Sprite):void
+		public function addEnemy(holder:Sprite):void
 		{
 			newPlacement = new Enemy();
 			//addChild(newPlacement);
 			holder.addChild(newPlacement);
 		}
 
-		function addEnemyPathFinder(holder:Sprite):void
+		public function addEnemyPathFinder(holder:Sprite):void
 		{
 			newPlacement = new Shape();
 			newPlacement.graphics.beginFill(0x000000,0);
@@ -140,20 +148,20 @@
 			holder.addChild(newPlacement);
 		}
 
-		function addCoin(holder:Sprite):void
+		public function addCoin(holder:Sprite):void
 		{
 			//adding coins
 			newPlacement = new Coin();
 			holder.addChild(newPlacement);
 		}
 
-		function addGoal(holder:Sprite):void
+		public function addGoal(holder:Sprite):void
 		{
 			newPlacement = new Goal();
 			holder.addChild(newPlacement);
 		}
 
-		function addScoreBoard(holder:Sprite):void
+		public function addScoreBoard(holder:Sprite):void
 		{
 			newPlacement = new TextField();
 			newPlacement.name = 'scoreBoard';
@@ -164,7 +172,7 @@
 			holder.addChild(newPlacement);
 		}
 
-		function backgroundGenerator(holder:Sprite):void
+		public function backgroundGenerator(holder:Sprite):void
 		{
 			var newPart:Shape = new Shape();
 			newPart.graphics.beginFill(0x222222);
@@ -235,35 +243,30 @@
 			bgHolder.x = 0;
 		}
 
-		function placeBlock(i:int, ob:Object)
+		public function placeBlock(i:int, ob:Object)
 		{
 			ob.x = (i - (row - 1) * lvlColumns) * ob.width;
 			ob.y = (row - 1) * ob.height;
 		}
 
-		function resetLvl():void
+		public function resetLvl():void
 		{
+
 			//Destroi todos os elementos associados ao nível
 			for (var i:int=0; i<lvlHolder.numChildren; i++)
 			{
 				var currentContainer = lvlHolder.getChildAt(i);
 				if (currentContainer.hasOwnProperty('numChildren'))
 				{
-					while (currentContainer.numChildren > 0)
+					for (var i2:int = 0; i2<currentContainer.numChildren; i2++)
 					{
-						for (var i2:int = 0; i2<currentContainer.numChildren; i2++)
+						var basicClass = currentContainer.getChildAt(i2);
+						try
 						{
-							var basicClass = currentContainer.getChildAt(i2);
-							if (basicClass.hasOwnProperty('numChildren'))
-							{
-								for (var i3:int = 0; i3 < basicClass.numChildren; i3++)
-								{
-									//Garante que todos os eventListeners são removidos
-									basicClass.destroy();
-								}
-							}
-							currentContainer.removeChildAt(i2);
+							basicClass.destroy();
 						}
+						catch (e:Error){/*Forma feia de ver se o método destroy existe!!*/}
+						currentContainer.removeChildAt(i2);
 					}
 				}
 			}

@@ -1,4 +1,9 @@
-﻿package 
+﻿/**
+Autor: Samuel F. V. Leal de Castro
+Número: 1050617
+Esta classe gera todos eventos entre o player e os inimigos
+**/
+package Elements.Dynamic
 {
 	import flash.display.Sprite;
 	import flash.display.MovieClip;
@@ -7,12 +12,14 @@
 	import flash.events.*;
 	import flash.display.Stage;
 	import flash.text.TextField;
+	
+	import Elements.Dynamic.Player;
 
-	public class Enemy extends Sprite
+	public class Enemy extends MovieClip
 	{
 		private var _LevelGenerator:MovieClip;
 		private var _holder:Sprite;
-		private var _jBall:bBall;
+		private var _jBall:Player;
 		private var _txtScore:TextField;
 
 		private var speed:Number;
@@ -22,6 +29,7 @@
 		{
 			addEventListener(Event.ADDED, beginClass);
 			addEventListener(Event.ENTER_FRAME, eFrame);
+			addEventListener("isFinished", destroy);
 		}
 
 		private function beginClass(event:Event):void
@@ -29,7 +37,7 @@
 
 			_LevelGenerator = MovieClip(parent.parent.parent);
 			_holder = Sprite(_LevelGenerator.lvlHolder);
-			_jBall = _LevelGenerator.lvlHolder.getChildByName('playerHolder').getChildByName('bBall');
+			_jBall = _LevelGenerator.lvlHolder.getChildByName('playerHolder').getChildByName('Player');
 			_txtScore = _LevelGenerator.lvlHolder.getChildByName('textHolder').getChildByName('scoreBoard');
 
 			speed = 5;
@@ -40,8 +48,8 @@
 
 		public function destroy()
 		{
-			addEventListener(Event.ADDED, beginClass);
-			addEventListener(Event.ENTER_FRAME, eFrame);
+			removeEventListener(Event.ADDED, beginClass);
+			removeEventListener(Event.ENTER_FRAME, eFrame);
 		}
 
 		private function eFrame(event:Event):void
@@ -72,7 +80,8 @@
 
 				}
 				else
-				{//jBall morre
+				{
+					//jBall morre
 					this.removeEventListener(Event.ENTER_FRAME, eFrame);
 					_LevelGenerator.resetLvl();
 
