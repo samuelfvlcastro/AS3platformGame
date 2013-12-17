@@ -84,7 +84,7 @@ package Elements
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,X,0,0,0,0,0,0,0,7,7,0,0,0,0,0,7,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,1,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 		);
 		var lvlArray2:Array = new Array(
@@ -224,7 +224,6 @@ package Elements
 			newPlacement.name = 'scoreBoard';
 
 			newPlacement.defaultTextFormat = dtextFormat;
-			Saves.resetHighScore();
 			newPlacement.text = 'Score: ' + score;
 
 			holder.addChild(newPlacement);
@@ -243,67 +242,77 @@ package Elements
 		public function generate():void
 		{
 
-			lvlArray = MovieClip(this)['lvlArray' + lvlCurrent];//Selector de nível
-			lvlColumns = Math.ceil(lvlArray.length / 16);//Número de colunas
-
-			for (var i:int = 0; i<lvlArray.length; i++)
+			try
 			{
-				if (i/lvlColumns == int(i/lvlColumns))
-				{
-					row++;
-				}
-				if (lvlArray[i] == 1)
-				{
-					addBlock(blockHolder);
-				}
-				else if (lvlArray[i] == 'CHAR')
-				{
-					addPlayer(playerHolder);
-				}
-				else if (lvlArray[i] == 2)
-				{
-					addLadder(ladderHolder);
-				}
-				else if (lvlArray[i] == 3)
-				{
-					addSpeeder(speederHolder);
-				}
-				else if (lvlArray[i] == 4)
-				{
-					addTrampolin(trampHolder);
-				}
-				else if (lvlArray[i] == 5)
-				{
-					addEnemy(enemyHolder);
-				}
-				else if (lvlArray[i] == 6)
-				{
-					addEnemyPathFinder(pathfinderHolder);
-				}
-				else if (lvlArray[i] == 7)
-				{
-					addCoin(coinHolder);
-				}
-				else if (lvlArray[i] == 8)
-				{
-					addGoal(GoalHolder);
-				}
-				else if (lvlArray[i] == 9)
-				{
-					addScoreBoard(textHolder);
-					_txtScore = TextField(textHolder.getChildByName('scoreBoard'));
-				}
 
-				if (lvlArray[i] != 0 && newPlacement != undefined)
-				{
-					placeBlock(i,newPlacement);
-				}
-				//backgroundGenerator(bgHolder);
+				lvlArray = MovieClip(this)['lvlArray' + lvlCurrent];//Selector de nível
+				lvlColumns = Math.ceil(lvlArray.length / 16);//Número de colunas
 
+				for (var i:int = 0; i<lvlArray.length; i++)
+				{
+					if (i/lvlColumns == int(i/lvlColumns))
+					{
+						row++;
+					}
+					if (lvlArray[i] == 1)
+					{
+						addBlock(blockHolder);
+					}
+					else if (lvlArray[i] == 'CHAR')
+					{
+						addPlayer(playerHolder);
+					}
+					else if (lvlArray[i] == 2)
+					{
+						addLadder(ladderHolder);
+					}
+					else if (lvlArray[i] == 3)
+					{
+						addSpeeder(speederHolder);
+					}
+					else if (lvlArray[i] == 4)
+					{
+						addTrampolin(trampHolder);
+					}
+					else if (lvlArray[i] == 5)
+					{
+						addEnemy(enemyHolder);
+					}
+					else if (lvlArray[i] == 6)
+					{
+						addEnemyPathFinder(pathfinderHolder);
+					}
+					else if (lvlArray[i] == 7)
+					{
+						addCoin(coinHolder);
+					}
+					else if (lvlArray[i] == 8)
+					{
+						addGoal(GoalHolder);
+					}
+					else if (lvlArray[i] == 9)
+					{
+						addScoreBoard(textHolder);
+						_txtScore = TextField(textHolder.getChildByName('scoreBoard'));
+					}
+
+					if (lvlArray[i] != 0 && newPlacement != undefined)
+					{
+						placeBlock(i,newPlacement);
+					}
+					//backgroundGenerator(bgHolder);
+
+
+				}
+				row = 0;
+				bgHolder.x = 0;
 
 			}
-			row = 0;
-			bgHolder.x = 0;
+			catch (e)
+			{
+				MovieClip(parent).gotoAndPlay(1);
+				MovieClip(parent).removeChild(this);
+			}
 		}
 
 		public function placeBlock(i:int, ob:Object)
@@ -314,15 +323,6 @@ package Elements
 
 		public function resetLvl(passedLevel:Boolean = false):void
 		{
-			//Grava os scores
-			if (passedLevel)
-			{
-				Saves.saveHighScore(score);
-			}
-			else
-			{
-				Saves.saveHighScore(0);
-			}
 
 			//Destroi todos os elementos associados ao nível
 			for (var i:int=0; i<lvlHolder.numChildren; i++)
@@ -345,8 +345,19 @@ package Elements
 				}
 			}
 
-			lvlHolder.x = 0;
-			generate();
+			//Grava os scores
+			Saves.saveHighScore(score);
+			if (passedLevel)
+			{
+				lvlHolder.x = 0;
+				generate();
+			}
+			else
+			{
+				MovieClip(parent).gotoAndPlay(1);
+				MovieClip(parent).removeChild(this);
+			}
+
 		}
 	}
 }
