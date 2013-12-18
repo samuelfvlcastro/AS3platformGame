@@ -117,6 +117,7 @@ package Elements
 
 		private function beginClass(event:Event):void
 		{
+
 			bgHolder.name = 'bgHolder';
 			this.lvlHolder.addChild(bgHolder);
 
@@ -154,8 +155,6 @@ package Elements
 		public function addBlock(holder:Sprite):void
 		{
 			newPlacement = new Block();
-			newPlacement.graphics.beginFill(0xFFFFFF,1);
-			newPlacement.graphics.drawRect(0,0,25,25);
 			holder.addChild(newPlacement);
 		}
 
@@ -229,22 +228,11 @@ package Elements
 			holder.addChild(newPlacement);
 		}
 
-		public function backgroundGenerator(holder:Sprite):void
-		{
-			var newPart:Shape = new Shape();
-			newPart.graphics.beginFill(0x222222);
-			newPart.graphics.drawRect(0,0,int(Math.random()*10)+1,int(Math.random()*10)+1);
-			newPart.x = int(Math.random() * lvlColumns * 50) - 550;
-			newPart.y = (row - 1) * 25;
-			holder.addChild(newPart);
-		}
-
 		public function generate():void
 		{
 
 			try
 			{
-
 				lvlArray = MovieClip(this)['lvlArray' + lvlCurrent];//Selector de nível
 				lvlColumns = Math.ceil(lvlArray.length / 16);//Número de colunas
 
@@ -300,7 +288,6 @@ package Elements
 					{
 						placeBlock(i,newPlacement);
 					}
-					//backgroundGenerator(bgHolder);
 
 
 				}
@@ -310,7 +297,8 @@ package Elements
 			}
 			catch (e)
 			{
-				MovieClip(parent).gotoAndPlay(1);
+				Saves.saveTmpScore(score);
+				MovieClip(parent).gotoAndPlay(4);
 				MovieClip(parent).removeChild(this);
 			}
 		}
@@ -346,7 +334,6 @@ package Elements
 			}
 
 			//Grava os scores
-			Saves.saveHighScore(score);
 			if (passedLevel)
 			{
 				lvlHolder.x = 0;
@@ -354,10 +341,25 @@ package Elements
 			}
 			else
 			{
-				MovieClip(parent).gotoAndPlay(1);
+				Saves.saveTmpScore(score);
+				MovieClip(parent).gotoAndPlay(4);
 				MovieClip(parent).removeChild(this);
 			}
 
+		}
+
+		public function callInput()
+		{
+			var inputField:TextField = new TextField();
+
+			addChild(inputField);
+
+			inputField.border = true;
+			inputField.width = 200;
+			inputField.height = 150;
+			inputField.x = 75;
+			inputField.y = 50;
+			inputField.type = "input";
 		}
 	}
 }

@@ -8,25 +8,46 @@ package Elements
 	import flash.net.SharedObject;
 	public class Saves
 	{
-		public static function getHighScore1():Number
+		
+		public static function saveTmpScore(score:Number){
+			var shared:SharedObject = SharedObject.getLocal("myStuff");
+			shared.data.tmpScore = score;
+			shared.flush();
+		}
+		
+		public static function getTmpScore():Number{
+			var shared:SharedObject = SharedObject.getLocal("myStuff");
+			return shared.data.tmpScore;
+		}
+		
+		public static function getHighScore1():String
 		{
 			var shared:SharedObject = SharedObject.getLocal("myStuff");
-			return shared.data.highScore1;
+			if(shared.data.highScore1Name == undefined){
+				return 'NO SCORE';
+			}
+			return shared.data.highScore1Name + '  ' + String(shared.data.highScore1);
 		}
 
-		public static function getHighScore2():Number
+		public static function getHighScore2():String
 		{
 			var shared:SharedObject = SharedObject.getLocal("myStuff");
-			return shared.data.highScore2;
+			if(shared.data.highScore2Name == undefined){
+				return 'NO SCORE';
+			}
+			return shared.data.highScore2Name + '  ' + shared.data.highScore2;
 		}
 
-		public static function getHighScore3():Number
+		public static function getHighScore3():String
 		{
 			var shared:SharedObject = SharedObject.getLocal("myStuff");
-			return shared.data.highScore3;
+			if(shared.data.highScore3Name == undefined){
+				return 'NO SCORE';
+			}
+			return shared.data.highScore3Name + '  ' + shared.data.highScore3;
 		}
 
-		public static function saveHighScore(scoreValue:Number):void
+		public static function saveHighScore(scoreValue:Number, pName:String):void
 		{
 			try
 			{
@@ -47,16 +68,21 @@ package Elements
 				if ( scoreValue >= shared.data.highScore1 )
 				{
 					shared.data.highScore2 = shared.data.highScore1;
+					shared.data.highScore2Name = shared.data.highScore1Name;
 					shared.data.highScore1 = scoreValue;
+					shared.data.highScore1Name = pName;
 				}
 				else if ( scoreValue >= shared.data.highScore2 )
 				{
 					shared.data.highScore3 = shared.data.highScore2;
+					shared.data.highScore3Name = shared.data.highScore2Name;
 					shared.data.highScore2 = scoreValue;
+					shared.data.highScore2Name = pName;
 				}
 				else if ( scoreValue >= shared.data.highScore3 )
 				{
 					shared.data.highScore3 = scoreValue;
+					shared.data.highScore3Name = pName;
 				}
 				shared.flush();
 			}

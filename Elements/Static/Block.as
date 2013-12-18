@@ -5,6 +5,7 @@ Número: 1050617
 package Elements.Static
 {
 	import flash.display.Sprite;
+		import flash.display.Shape;
 	import flash.display.MovieClip;
 	import flash.events.*;
 
@@ -21,6 +22,8 @@ package Elements.Static
 		private function beginClass(event:Event):void
 		{
 			_root = MovieClip(root);
+			this.graphics.beginFill(0x996600,1);
+			this.graphics.drawRect(0,0,25,25);
 		}
 
 		public function destroy()

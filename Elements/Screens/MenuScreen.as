@@ -24,7 +24,7 @@ package Elements.Screens
 
 		private function beginClass(event:Event):void
 		{
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyPressedDownMenu);
 		}
 		public function addButton(lable:String, divH:int, isPressed:Boolean = false)
 		{
@@ -38,7 +38,8 @@ package Elements.Screens
 			menuButton.name = this.numChildren.toString();
 
 			menuButton.border = true;
-			menuButton.borderColor = 0xFFFFF;
+			menuButton.borderColor = 0x97040C;
+			menuButton.backgroundColor = 0x97040C;
 			menuButton.x = 175;
 			menuButton.y = stage.height / 2 + divH;
 
@@ -51,7 +52,7 @@ package Elements.Screens
 			addChild(menuButton);
 		}
 
-		function keyPressedDown(event:KeyboardEvent):void
+		function keyPressedDownMenu(event:KeyboardEvent):void
 		{
 			var key:uint = event.keyCode;
 			switch (key)
@@ -71,7 +72,7 @@ package Elements.Screens
 					}
 					break;
 				case 13 :
-				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown);
+					stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDownMenu);
 					switch (selection)
 					{
 						case 0 :

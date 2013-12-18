@@ -36,8 +36,8 @@ package Elements.Dynamic
 		var downKeyDown:Boolean = false;
 
 		//Controlo de velocidade
-		var hoSpeed:Number = 2;//holder
-		var plSpeed:Number = 4;//player
+		var hoSpeed:Number = 5;//holder
+		var plSpeed:Number = 6;//player
 
 		//Controlo de saltos
 		var mainJumping:Boolean = false;

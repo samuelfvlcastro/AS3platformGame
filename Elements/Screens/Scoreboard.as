@@ -50,7 +50,6 @@ package Elements.Screens
 		function keyPressedDown2(event:KeyboardEvent):void
 		{
 			var key:uint = event.keyCode;
-			trace(key);
 			if (key == 13)
 			{
 				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown2);
