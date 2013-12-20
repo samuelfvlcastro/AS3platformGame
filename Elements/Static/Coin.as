@@ -46,6 +46,7 @@ package Elements.Static
 
 		private function eFrame(event:Event):void
 		{
+			if (this != null){
 			if(this.hitTestObject(_jBall))
 			{
 				if (this != null && this.parent != null)
@@ -57,6 +58,7 @@ package Elements.Static
 				_LevelGenerator.score +=  100;
 				_txtScore.text = "Score: " + String(_LevelGenerator.score);
 			}
+		}
 		}
 	}
 }

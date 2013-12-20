@@ -12,6 +12,8 @@ package Elements.Screens
 	import flash.display.Sprite;
 	import flash.events.*;
 
+	import Elements.Saves;
+	
 	public class Scoreboard extends MovieClip
 	{
 		var selection:Number = 0;
@@ -53,6 +55,13 @@ package Elements.Screens
 			if (key == 13)
 			{
 				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown2);
+				MovieClip(parent).gotoAndPlay(1);
+				MovieClip(parent).removeChild(this);
+			}
+			if (key == 88)
+			{
+				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown2);
+				Saves.resetHighScore();
 				MovieClip(parent).gotoAndPlay(1);
 				MovieClip(parent).removeChild(this);
 			}

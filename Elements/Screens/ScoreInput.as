@@ -55,11 +55,11 @@ package Elements.Screens
 		function keyPressedDown3(event:KeyboardEvent):void
 		{
 			var key:uint = event.keyCode;
-			if (key == 13)
+			if (key == 13 || key == 32)
 			{
 				Saves.saveHighScore(Saves.getTmpScore(), inputField.text);
 				stage.focus = stage;
-				MovieClip(parent).gotoAndPlay(1);
+				MovieClip(parent).gotoAndPlay(3);
 				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyPressedDown3);
 				MovieClip(parent).removeChild(this);
 
